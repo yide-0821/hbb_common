@@ -73,14 +73,38 @@ lazy_static::lazy_static! {
     static ref KEY_PAIR: Mutex<Option<KeyPair>> = Default::default();
     static ref USER_DEFAULT_CONFIG: RwLock<(UserDefaultConfig, Instant)> = RwLock::new((UserDefaultConfig::load(), Instant::now()));
     pub static ref NEW_STORED_PEER_CONFIG: Mutex<HashSet<String>> = Default::default();
-    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // Custom build defaults for the self-hosted deployment.
+    pub static ref DEFAULT_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(
+        HashMap::from([
+            ("custom-rendezvous-server".to_owned(), "yide.work:21116".to_owned()),
+            ("relay-server".to_owned(), "yide.work:21117".to_owned()),
+            ("api-server".to_owned(), "https://rd.yide.work:90".to_owned()),
+            ("key".to_owned(), RS_PUB_KEY.to_owned()),
+            ("enable-check-update".to_owned(), "N".to_owned()),
+        ]),
+    );
     pub static ref OVERWRITE_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(
+        HashMap::from([
+            ("enable-check-update".to_owned(), "N".to_owned()),
+            ("show-scam-warning".to_owned(), "N".to_owned()),
+        ]),
+    );
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    // Custom build: builtin (non user-changeable) options.
+    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new(
+        HashMap::from([
+            ("hide-tray".to_owned(), "Y".to_owned()),
+            ("hide-stop-service".to_owned(), "Y".to_owned()),
+            ("hide-username-on-card".to_owned(), "Y".to_owned()),
+            ("hide-network-settings".to_owned(), "Y".to_owned()),
+            ("hide-websocket-settings".to_owned(), "Y".to_owned()),
+            ("hide-proxy-settings".to_owned(), "Y".to_owned()),
+        ]),
+    );
 }
 
 #[cfg(target_os = "android")]
@@ -114,8 +138,8 @@ const CHARS: &[char] = &[
     'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
 
-pub const RENDEZVOUS_SERVERS: &[&str] = &["rs-ny.rustdesk.com"];
-pub const RS_PUB_KEY: &str = "OeVuKk5nlHiXp+APNn0Y3pC1Iwpwn44JGqrQCsWqmBw=";
+pub const RENDEZVOUS_SERVERS: &[&str] = &["yide.work:21116"];
+pub const RS_PUB_KEY: &str = "PIHwHfS2zm5gPyq9KWicGZFALiz2w3M8zgcgHR0hukI=";
 
 pub const RENDEZVOUS_PORT: i32 = 21116;
 pub const RELAY_PORT: i32 = 21117;
